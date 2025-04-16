@@ -7,33 +7,35 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useUser } from "../contexts/UserContext";
-import { loginUser, UserRole } from "../services/userService";
-import { NAMES } from "../utils/constants";
+import { useUsuario } from "../contextos/UsuarioContext";
+import { PapelUsuario } from "../modelos/enumerados/PapelUsuario";
+import { entrarComUsuario } from "../servicos/usuarioService";
+import { NOMES } from "../utilitarios/constantes";
 
 export default function Login({ navigation }: any) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const { setUser } = useUser();
+  const [nome, definirNomeUsuario] = useState("");
+  const [senha, setPassword] = useState("");
+  const { definirUsuario } = useUsuario();
 
   const handleLogin = () => {
-    if (!username || !password) {
+    if (!nome || !senha) {
       Alert.alert("Erro", "Preencha todos os campos!");
       return;
     }
 
-    const user = loginUser(username, password);
+    const usuario = entrarComUsuario(nome, senha);
 
-    if (user) {
-      setUser({
-        username: user.username,
-        role: user.role,
-        password: user.password,
+    if (usuario) {
+      definirUsuario({
+        id: usuario.id,
+        nome: usuario.nome,
+        papel: usuario.papel,
+        senha: usuario.senha,
       });
-      if (user.role === UserRole.ADMIN) {
-        navigation.replace(NAMES.HOME_ADMIN);
+      if (usuario.papel === PapelUsuario.ADMINISTRADOR) {
+        navigation.replace(NOMES.INICIO_ADMIN);
       } else {
-        navigation.replace(NAMES.HOME);
+        navigation.replace(NOMES.INICIO);
       }
     } else {
       Alert.alert("Erro", "Usuário ou senha incorretos.");
@@ -49,8 +51,8 @@ export default function Login({ navigation }: any) {
         style={styles.input}
         placeholder="Usuário"
         placeholderTextColor="#aaa"
-        value={username}
-        onChangeText={setUsername}
+        value={nome}
+        onChangeText={definirNomeUsuario}
       />
 
       <TextInput
@@ -58,7 +60,7 @@ export default function Login({ navigation }: any) {
         placeholder="Senha"
         placeholderTextColor="#aaa"
         secureTextEntry
-        value={password}
+        value={senha}
         onChangeText={setPassword}
       />
 
@@ -76,7 +78,7 @@ export default function Login({ navigation }: any) {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Não tem uma conta?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate(NAMES.REGISTER)}>
+        <TouchableOpacity onPress={() => navigation.navigate(NOMES.REGISTRAR)}>
           <Text style={styles.footerLink}>Criar conta</Text>
         </TouchableOpacity>
       </View>

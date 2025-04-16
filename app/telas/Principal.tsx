@@ -7,52 +7,52 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useUser } from "../contexts/UserContext";
-import { getAppointments } from "../services/appointmentService";
-import { getUserRoleDescription } from "../services/userService";
-import { NAMES } from "../utils/constants";
+import { useUsuario } from "../contextos/UsuarioContext";
+import { Agendamento } from "../modelos/Agendamento";
+import { obterAgendamentorPorUsuarioId } from "../servicos/agendamentoService";
+import { obterServicoPorId } from "../servicos/opcoesService";
+import { NOMES } from "../utilitarios/constantes";
+import { PapelUsuario } from "../modelos/enumerados/PapelUsuario";
 
 export default function Home({ navigation }: any) {
-  const { user } = useUser();
-  const roleDescription = user
-    ? getUserRoleDescription(user.role)
+  const { usuario } = useUsuario();
+  const papelDescription = usuario
+    ? PapelUsuario.obterDescricao(Number(usuario.papel))
     : "Desconhecido";
 
-  const [userAppointments, setUserAppointments] = useState<any[]>([]);
+  const [usuarioAppointments, setusuarioAppointments] = useState<any[]>([]);
 
   useFocusEffect(
     React.useCallback(() => {
-      if (user) {
-        const appointments = getAppointments().filter(
-          (agendamento) => agendamento.usuario === user.username
-        );
-        setUserAppointments(appointments);
+      if (usuario) {
+        const appointments = obterAgendamentorPorUsuarioId(usuario.id);
+        setusuarioAppointments(appointments);
       } else {
-        setUserAppointments([]);
+        setusuarioAppointments([]);
       }
-    }, [user])
+    }, [usuario])
   );
 
   return (
     <View style={styles.container}>
-      {user ? (
+      {usuario ? (
         <>
           <Text style={styles.welcomeText}>
-            Olá, {roleDescription}! {"\n"} Bem-vindo à sua página de
+            Olá, {papelDescription}! {"\n"} Bem-vindo à sua página de
             agendamentos.
           </Text>
 
-          {userAppointments.length > 0 ? (
+          {usuarioAppointments.length > 0 ? (
             <View style={styles.appointmentList}>
               <Text style={styles.listTitle}>Seus Agendamentos:</Text>
               <FlatList
-                data={userAppointments}
-                keyExtractor={(item) => item.id.toString()}
+                data={usuarioAppointments}
+                keyExtractor={(item: Agendamento) => item.id.toString()}
                 renderItem={({ item }) => (
                   <View style={styles.appointmentItem}>
                     <Text style={styles.appointmentText}>
                       <Text style={styles.boldText}>Serviço:</Text>{" "}
-                      {item.servico.descricao}
+                      {obterServicoPorId(item.servicoId)?.descricao}
                     </Text>
                     <Text style={styles.appointmentText}>
                       <Text style={styles.boldText}>Data:</Text>{" "}
@@ -68,10 +68,10 @@ export default function Home({ navigation }: any) {
             </Text>
           )}
 
-          {userAppointments.length === 0 && (
+          {usuarioAppointments.length === 0 && (
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate(NAMES.APPOINTMENT)}
+              onPress={() => navigation.navigate(NOMES.AGENDAMENTO)}
             >
               <Text style={styles.buttonText}>Agendar Serviço</Text>
             </TouchableOpacity>

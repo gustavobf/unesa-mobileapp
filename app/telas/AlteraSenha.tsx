@@ -7,13 +7,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useUser } from "../contexts/UserContext";
-import { User } from "../models/User";
-import { getUsers } from "../services/userService";
-import { NAMES } from "../utils/constants";
+import { useUsuario } from "../contextos/UsuarioContext";
+import { trocarSenha } from "../servicos/usuarioService";
+import { NOMES } from "../utilitarios/constantes";
 
 export default function ChangePassword({ navigation }: any) {
-  const { user, setUser } = useUser();
+  const { usuario, definirUsuario } = useUsuario();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,34 +28,35 @@ export default function ChangePassword({ navigation }: any) {
       return;
     }
 
-    if (user && user.password !== currentPassword) {
+    if (usuario && usuario.senha !== currentPassword) {
       Alert.alert("Erro", "Senha atual incorreta!");
       return;
     }
 
-    const updatedUser: User | undefined = getUsers().find(
-      (u) => u.username === user?.username
-    );
+    if (!usuario) {
+      Alert.alert("Erro", "Usuário não encontrado!");
+      return;
+    }
 
-    if (updatedUser) {
-      updatedUser.password = newPassword;
-      setUser({ ...updatedUser });
+    const sucess = trocarSenha(usuario.nome, usuario.senha, newPassword);
+
+    if (sucess) {
       Alert.alert("Sucesso", "Senha alterada com sucesso!");
-      navigation.replace(NAMES.HOME);
+      navigation.replace(NOMES.INICIO);
     } else {
       Alert.alert("Erro", "Usuário não encontrado.");
     }
   };
 
   const handleLogout = () => {
-    setUser(null);
-    navigation.replace(NAMES.LOGIN);
+    definirUsuario(null);
+    navigation.replace(NOMES.ENTRAR);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Trocar Senha</Text>
-      <Text style={styles.welcomeText}>Olá, {user?.username}!</Text>
+      <Text style={styles.welcomeText}>Olá, {usuario?.nome}!</Text>
 
       <TextInput
         style={styles.input}

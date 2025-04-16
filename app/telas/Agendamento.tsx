@@ -3,52 +3,51 @@ import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { useUser } from "../contexts/UserContext";
-import { createAppointment } from "../services/appointmentService";
-import { getServices } from "../services/beautyService";
+import { useUsuario } from "../contextos/UsuarioContext";
+import { criarAgendamento } from "../servicos/agendamentoService";
+import { obterServicoPorId, obterServicos } from "../servicos/opcoesService";
 
 export default function Appointment() {
-  const [dataInicio, setDataInicio] = useState<Date>(new Date());
-  const [selectedService, setSelectedService] = useState<number | null>(null);
-  const [services, setServices] = useState<any[]>([]);
+  const [dataInicio, definirDataInicio] = useState<Date>(new Date());
+  const [servicoSelecionado, definirServicoSelecionado] = useState<number | null>(null);
+  const [servicos, definirServicos] = useState<any[]>([]);
 
-  const { user } = useUser();
+  const { usuario } = useUsuario();
 
   useFocusEffect(
     React.useCallback(() => {
-      const fetchServices = async () => {
+      const buscarServicos = async () => {
         try {
-          const serviceList = await getServices();
-          setServices(serviceList);
-        } catch (error) {
-          console.error("Erro ao buscar serviços:", error);
+          const listaDeServicos = obterServicos();
+          definirServicos(listaDeServicos);
+        } catch (erro) {
+          console.error("Erro ao buscar serviços:", erro);
           Alert.alert("Erro", "Não foi possível carregar os serviços.");
         }
       };
-
-      fetchServices();
+      buscarServicos();
     }, [])
   );
 
-  const openDateTimePicker = () => {
+  const abrirEscolhaDataHora = () => {
     DateTimePickerAndroid.open({
       value: dataInicio,
       mode: "date",
       minimumDate: new Date(),
       onChange: (event, selectedDate) => {
         if (selectedDate) {
-          const newDate = new Date(selectedDate);
+          const novaData = new Date(selectedDate);
           DateTimePickerAndroid.open({
-            value: newDate,
+            value: novaData,
             mode: "time",
             is24Hour: true,
             onChange: (event, selectedTime) => {
               if (selectedTime) {
-                newDate.setHours(
+                novaData.setHours(
                   selectedTime.getHours(),
                   selectedTime.getMinutes()
                 );
-                setDataInicio(newDate);
+                definirDataInicio(novaData);
               }
             },
           });
@@ -58,28 +57,28 @@ export default function Appointment() {
   };
 
   const handleCreateAppointment = () => {
-    if (!user) {
+    if (!usuario) {
       Alert.alert("Erro", "Usuário não encontrado.");
       return;
     }
 
-    if (!selectedService) {
+    if (!servicoSelecionado) {
       Alert.alert("Erro", "Por favor, selecione um serviço.");
       return;
     }
 
     try {
-      const agendamento = createAppointment(
-        user.username,
-        selectedService,
+      const agendamento = criarAgendamento(
+        usuario.id,
+        servicoSelecionado,
         dataInicio
       );
 
       if (agendamento) {
         Alert.alert(
           "Agendamento Confirmado!",
-          `Você agendou o serviço: ${
-            agendamento.servico.descricao
+          `Você agendou o serviço ${
+            obterServicoPorId(agendamento.servicoId)?.descricao
           } para ${agendamento.dataInicioAgendamento.toLocaleString("pt-BR")}`
         );
       } else {
@@ -95,12 +94,12 @@ export default function Appointment() {
       <Text style={styles.title}>Agendar seu Serviço</Text>
 
       <Picker
-        selectedValue={selectedService}
-        onValueChange={(itemValue) => setSelectedService(itemValue)}
+        selectedValue={servicoSelecionado}
+        onValueChange={(itemValue) => definirServicoSelecionado(itemValue)}
         style={styles.picker}
       >
         <Picker.Item label="Escolha um serviço" value={null} />
-        {services.map((service) => (
+        {servicos.map((service) => (
           <Picker.Item
             key={service.id}
             label={service.descricao}
@@ -109,7 +108,7 @@ export default function Appointment() {
         ))}
       </Picker>
 
-      <TouchableOpacity style={styles.input} onPress={openDateTimePicker}>
+      <TouchableOpacity style={styles.input} onPress={abrirEscolhaDataHora}>
         <Text style={styles.dateText}>
           {dataInicio.toLocaleString("pt-BR")}
         </Text>

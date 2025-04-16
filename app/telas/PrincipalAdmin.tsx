@@ -11,96 +11,86 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useUser } from "../contexts/UserContext";
+import { useUsuario } from "../contextos/UsuarioContext";
 import {
-  getAppointments,
-  deleteAppointment,
-} from "../services/appointmentService";
-import { createBeautyService } from "../services/beautyService";
+  excluirAgendamento,
+  obterAgendamentos,
+} from "../servicos/agendamentoService";
+import { criarNovaOpcao, obterServicoPorId } from "../servicos/opcoesService";
+import { Agendamento } from "../modelos/Agendamento";
+import { obterUsuarioPorId } from "../servicos/usuarioService";
 
 export default function HomeAdmin({ navigation }: any) {
-  const { user } = useUser();
-  const [userAppointments, setUserAppointments] = useState<any[]>([]);
-  const [isCreatingService, setIsCreatingService] = useState(false);
-  const [serviceCategory, setServiceCategory] = useState("");
-  const [servicePrice, setServicePrice] = useState("");
-  const [serviceDescription, setServiceDescription] = useState("");
-  const [serviceDuration, setServiceDuration] = useState("");
-  const [totalGanhos, setTotalGanhos] = useState(0);
+  const { usuario } = useUsuario();
+  const [agendamentosUsuario, definirAgendamentosUsuario] = useState<any[]>([]);
+  const [estaCriandoOpcao, definirEstaCriandoOpcao] = useState(false);
+  const [opcaoCategoria, definirCategoriaOpcao] = useState("");
+  const [opcaoPreco, definirPrecoOpcao] = useState("");
+  const [opcaoDescricao, definirDescricaoOpcao] = useState("");
+  const [opcaoDuracao, definirDuracaoOpcao] = useState("");
 
   const handleCreateService = () => {
-    if (
-      !serviceCategory ||
-      !servicePrice ||
-      !serviceDescription ||
-      !serviceDuration
-    ) {
+    if (!opcaoCategoria || !opcaoPreco || !opcaoDescricao || !opcaoDuracao) {
       Alert.alert("Erro", "Por favor, preencha todos os campos.");
       return;
     }
 
-    const newService = createBeautyService(
-      serviceCategory,
-      parseFloat(servicePrice),
-      serviceDescription,
-      parseInt(serviceDuration, 10)
+    const novaOpcao = criarNovaOpcao(
+      opcaoCategoria,
+      parseFloat(opcaoPreco),
+      opcaoDescricao,
+      parseInt(opcaoDuracao, 10)
     );
 
-    if (newService) {
+    if (novaOpcao) {
       Alert.alert(
         "Serviço Criado",
-        `Serviço ${newService.descricao} criado com sucesso!`
+        `Serviço ${novaOpcao.descricao} criado com sucesso!`
       );
-      setServiceCategory("");
-      setServicePrice("");
-      setServiceDescription("");
-      setServiceDuration("");
-      setIsCreatingService(false);
+      definirCategoriaOpcao("");
+      definirPrecoOpcao("");
+      definirDescricaoOpcao("");
+      definirDuracaoOpcao("");
+      definirEstaCriandoOpcao(false);
     } else {
       Alert.alert("Erro", "Não foi possível criar o serviço.");
     }
   };
 
-  const handleCompleteAppointment = (id: number) => {
-    deleteAppointment(id);
-    setUserAppointments((prev) => prev.filter((item) => item.id !== id));
+  const tratarAgendamentoCompleto = (id: number) => {
+    excluirAgendamento(id);
+    definirAgendamentosUsuario((prev) => prev.filter((item) => item.id !== id));
   };
 
   useFocusEffect(
     React.useCallback(() => {
-      const appointments = getAppointments().sort((a, b) => {
-        const dateA = new Date(a.dataInicioAgendamento);
-        const dateB = new Date(b.dataInicioAgendamento);
-        return dateA.getTime() - dateB.getTime();
+      const agendamentos = obterAgendamentos().sort((a, b) => {
+        const dataA = new Date(a.dataInicioAgendamento);
+        const dataB = new Date(b.dataInicioAgendamento);
+        return dataA.getTime() - dataB.getTime();
       });
 
-      setUserAppointments(appointments);
-
-      const total = appointments.reduce(
-        (acc, item) => acc + item.servico.preco,
-        0
-      );
-      setTotalGanhos(total);
+      definirAgendamentosUsuario(agendamentos);
     }, [])
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      {user ? (
+      {usuario ? (
         <>
-          {userAppointments.length > 0 ? (
+          {agendamentosUsuario.length > 0 ? (
             <View style={styles.appointmentList}>
               <Text style={styles.listTitle}>Agendamentos:</Text>
               <FlatList
-                data={userAppointments}
-                keyExtractor={(item) => item.id.toString()}
+                data={agendamentosUsuario}
+                keyExtractor={(item: Agendamento) => item.id.toString()}
                 renderItem={({ item }) => (
                   <View style={styles.appointmentItem}>
                     <Text style={styles.appointmentText}>
-                      Usuário: {item.usuario}
+                      Usuário: {obterUsuarioPorId(item.usuarioId)!.nome}
                     </Text>
                     <Text style={styles.appointmentText}>
-                      Serviço: {item.servico.descricao}
+                      Serviço: {obterServicoPorId(item.servicoId)!.descricao}
                     </Text>
                     <Text style={styles.appointmentText}>
                       Data: {item.dataInicioAgendamento.toLocaleString("pt-BR")}
@@ -109,11 +99,11 @@ export default function HomeAdmin({ navigation }: any) {
                       Fim: {item.dataFimAgendamento.toLocaleString("pt-BR")}
                     </Text>
                     <Text style={styles.appointmentText}>
-                      Preço: R${item.servico.preco.toFixed(2).replace(".", ",")}
+                      Preço: R${obterServicoPorId(item.servicoId)!.preco.toFixed(2).replace(".", ",")}
                     </Text>
                     <TouchableOpacity
                       style={styles.button}
-                      onPress={() => handleCompleteAppointment(item.id)}
+                      onPress={() => tratarAgendamentoCompleto(item.id)}
                     >
                       <Text style={styles.buttonText}>Concluir</Text>
                     </TouchableOpacity>
@@ -128,16 +118,16 @@ export default function HomeAdmin({ navigation }: any) {
           )}
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setIsCreatingService(true)}
+            onPress={() => definirEstaCriandoOpcao(true)}
           >
             <Text style={styles.buttonText}>Criar Novo Serviço</Text>
           </TouchableOpacity>
 
           <Modal
-            visible={isCreatingService}
+            visible={estaCriandoOpcao}
             animationType="slide"
             transparent={true}
-            onRequestClose={() => setIsCreatingService(false)}
+            onRequestClose={() => definirEstaCriandoOpcao(false)}
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
@@ -145,27 +135,27 @@ export default function HomeAdmin({ navigation }: any) {
                 <TextInput
                   style={styles.input}
                   placeholder="Categoria"
-                  value={serviceCategory}
-                  onChangeText={setServiceCategory}
+                  value={opcaoCategoria}
+                  onChangeText={definirCategoriaOpcao}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Preço"
-                  value={servicePrice}
-                  onChangeText={setServicePrice}
+                  value={opcaoPreco}
+                  onChangeText={definirPrecoOpcao}
                   keyboardType="numeric"
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Descrição"
-                  value={serviceDescription}
-                  onChangeText={setServiceDescription}
+                  value={opcaoDescricao}
+                  onChangeText={definirDescricaoOpcao}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Duração (minutos)"
-                  value={serviceDuration}
-                  onChangeText={setServiceDuration}
+                  value={opcaoDuracao}
+                  onChangeText={definirDuracaoOpcao}
                   keyboardType="numeric"
                 />
                 <TouchableOpacity
@@ -176,7 +166,7 @@ export default function HomeAdmin({ navigation }: any) {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.cancelButton}
-                  onPress={() => setIsCreatingService(false)}
+                  onPress={() => definirEstaCriandoOpcao(false)}
                 >
                   <Text style={styles.buttonText}>Cancelar</Text>
                 </TouchableOpacity>

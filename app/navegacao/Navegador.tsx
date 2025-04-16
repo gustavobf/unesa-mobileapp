@@ -1,35 +1,35 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import Login from "../screens/Login";
-import Register from "../screens/Register";
-import { NAMES } from "../utils/constants";
-import TabsNavigator from "./TabsNavigator";
+import Entrar from "../telas/Entrar";
+import Registrar from "../telas/Registrar";
+import { NOMES } from "../utilitarios/constantes";
+import AbasNavegador from "./AbasNavegador";
 
 const Stack = createStackNavigator();
 
-export default function Navigator() {
+export default function Navegador() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={NAMES.LOGIN}>
+      <Stack.Navigator initialRouteName={NOMES.ENTRAR}>
         <Stack.Screen
-          name={NAMES.LOGIN}
-          component={Login}
+          name={NOMES.ENTRAR}
+          component={Entrar}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name={NAMES.REGISTER}
-          component={Register}
+          name={NOMES.REGISTRAR}
+          component={Registrar}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name={NAMES.HOME}
-          component={TabsNavigator}
+          name={NOMES.INICIO}
+          component={AbasNavegador}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name={NAMES.HOME_ADMIN}
-          component={TabsNavigator}
+          name={NOMES.INICIO_ADMIN}
+          component={AbasNavegador}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

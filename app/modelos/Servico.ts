@@ -18,4 +18,14 @@ export class Servico {
     this.descricao = descricao;
     this.duracao = duracao;
   }
+
+  static traduzir(row: any): Servico {
+    return new Servico(
+      row.id,
+      row.categoria,
+      row.preco,
+      row.descricao,
+      row.duracao
+    );
+  }
 }

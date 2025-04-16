@@ -5,8 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84d1c972-339b-402b-9f9a-270bbdb50378" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/eas.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/contexts/UserContext.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/Agendamento.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/Servico.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/User.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/navigation/Navigator.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/navigation/TabsNavigator.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/screens/Appointment.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/screens/ChangePassword.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/screens/Home.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/screens/HomeAdmin.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/screens/Login.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/screens/Register.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/appointmentService.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/beautyService.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/userService.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/IdGenerator.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/constants.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,9 +39,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2un0JazJnE63hMxLehse2YrtsD4" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -31,6 +51,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",

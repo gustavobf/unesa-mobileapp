@@ -7,22 +7,23 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { addUser, UserRole } from "../services/userService";
-import { NAMES } from "../utils/constants";
+import { adicionarUsuario } from "../servicos/usuarioService";
+import { NOMES } from "../utilitarios/constantes";
+import { PapelUsuario } from "../modelos/enumerados/PapelUsuario";
 
 export default function Register({ navigation }: any) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [nome, definirNomeUsuario] = useState("");
+  const [senha, definirSenha] = useState("");
 
   const handleRegister = () => {
-    if (username && password) {
+    if (nome && senha) {
       try {
-        addUser(username, password, UserRole.CLIENTE);
+        adicionarUsuario(nome, senha, PapelUsuario.CLIENTE);
         Alert.alert(
           "Cadastro bem-sucedido!",
-          `Usuário ${username} criado com sucesso.`
+          `Usuário ${nome} criado com sucesso.`
         );
-        navigation.navigate(NAMES.LOGIN);
+        navigation.navigate(NOMES.ENTRAR);
       } catch (error: any) {
         Alert.alert("Erro", error.message);
       }
@@ -38,16 +39,16 @@ export default function Register({ navigation }: any) {
 
       <TextInput
         placeholder="Usuário"
-        value={username}
-        onChangeText={setUsername}
+        value={nome}
+        onChangeText={definirNomeUsuario}
         style={styles.input}
       />
 
       <TextInput
         placeholder="Senha"
         secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+        value={senha}
+        onChangeText={definirSenha}
         style={styles.input}
       />
 
@@ -57,7 +58,7 @@ export default function Register({ navigation }: any) {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Já tem uma conta?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate(NAMES.LOGIN)}>
+        <TouchableOpacity onPress={() => navigation.navigate(NOMES.ENTRAR)}>
           <Text style={styles.footerLink}>Entrar</Text>
         </TouchableOpacity>
       </View>
