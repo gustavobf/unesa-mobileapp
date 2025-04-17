@@ -13,7 +13,7 @@ import { estilosComuns } from "../estilos/estilosComuns";
 import { criarAgendamento } from "../servicos/agendamentoService";
 import { obterServicoPorId, obterServicos } from "../servicos/procedimentoService";
 
-export default function Appointment() {
+export default function Agendamento() {
   const [dataInicio, definirDataInicio] = useState<Date>(new Date());
   const [servicoSelecionado, definirServicoSelecionado] = useState<
     number | null
@@ -64,7 +64,7 @@ export default function Appointment() {
     });
   };
 
-  const handleCreateAppointment = () => {
+  const tratarCriacaoAgendamento = () => {
     if (!usuario) {
       Alert.alert("Erro", "Usuário não encontrado.");
       return;
@@ -85,8 +85,7 @@ export default function Appointment() {
       if (agendamento) {
         Alert.alert(
           "Agendamento Confirmado!",
-          `Você agendou o serviço ${
-            obterServicoPorId(agendamento.servicoId)?.descricao
+          `Você agendou o serviço ${obterServicoPorId(agendamento.servicoId)?.descricao
           } para ${agendamento.dataInicioAgendamento.toLocaleString("pt-BR")}`
         );
       } else {
@@ -104,7 +103,7 @@ export default function Appointment() {
       <Picker
         selectedValue={servicoSelecionado}
         onValueChange={(itemValue) => definirServicoSelecionado(itemValue)}
-        style={estilosComuns.escolha}
+        style={estilosComuns.escolhaDataHoraAgendamento}
       >
         <Picker.Item label="Escolha um serviço" value={null} />
         {servicos.map((service) => (
@@ -117,17 +116,16 @@ export default function Appointment() {
       </Picker>
 
       <TouchableOpacity
-        style={estilosComuns.input}
-        onPress={abrirEscolhaDataHora}
+        style={estilosComuns.inputDataHoraAgendamento} onPress={abrirEscolhaDataHora}
       >
-        <Text style={estilosComuns.textoData}>
+        <Text style={estilosComuns.textoDataAgendamento}>
           {dataInicio.toLocaleString("pt-BR")}
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={estilosComuns.botao}
-        onPress={handleCreateAppointment}
+        onPress={tratarCriacaoAgendamento}
       >
         <Text style={estilosComuns.textoBotao}>Confirmar Agendamento</Text>
       </TouchableOpacity>

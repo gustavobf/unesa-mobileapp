@@ -4,19 +4,19 @@ import React from "react";
 import { useUsuario } from "../contextos/UsuarioContext";
 import { PapelUsuario } from "../modelos/enumerados/PapelUsuario";
 import Agendamento from "../telas/Agendamento";
-import ChangePassword from "../telas/AlterarSenha";
+import TrocarSenha from "../telas/AlterarSenha";
 import Inicio from "../telas/Principal";
 import PrincipalAdmin from "../telas/PrincipalAdmin";
 import { NOMES } from "../utilitarios/constantes";
 import { Cores } from "../estilos/cores";
 
-const Tab = createBottomTabNavigator();
+const Aba = createBottomTabNavigator();
 
 export default function AbasNavegador() {
   const { usuario } = useUsuario();
 
   return (
-    <Tab.Navigator
+    <Aba.Navigator
       initialRouteName={
         usuario?.papel === PapelUsuario.ADMINISTRADOR
           ? NOMES.INICIO_ADMIN
@@ -40,32 +40,32 @@ export default function AbasNavegador() {
         tabBarInactiveTintColor: "black",
       })}
     >
-      <Tab.Screen
+      <Aba.Screen
         name={NOMES.USUARIO}
-        component={ChangePassword}
+        component={TrocarSenha}
         options={{ headerShown: false }}
       />
       {usuario?.papel === PapelUsuario.CLIENTE && (
-        <Tab.Screen
+        <Aba.Screen
           name={NOMES.INICIO}
           component={Inicio}
           options={{ headerShown: false }}
         />
       )}
       {usuario?.papel === PapelUsuario.ADMINISTRADOR && (
-        <Tab.Screen
+        <Aba.Screen
           name={NOMES.INICIO_ADMIN}
           component={PrincipalAdmin}
           options={{ headerShown: false, title: NOMES.ADMINISTRADOR }}
         />
       )}
       {usuario?.papel === PapelUsuario.CLIENTE && (
-        <Tab.Screen
+        <Aba.Screen
           name={NOMES.AGENDAMENTO}
           component={Agendamento}
           options={{ headerShown: false }}
         />
       )}
-    </Tab.Navigator>
+    </Aba.Navigator>
   );
 }

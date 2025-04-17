@@ -26,7 +26,7 @@ export const ProvedorUsuario: React.FC<PropriedadesProvedorUsuario> = ({
   children,
 }) => {
   const [usuario, definirUsuario] = useState<Usuario | null>(null);
-  const [carregando, setCarregando] = useState(true);
+  const [carregando, definirCarregando] = useState(true);
 
   useEffect(() => {
     const carregarUsuario = async () => {
@@ -34,7 +34,7 @@ export const ProvedorUsuario: React.FC<PropriedadesProvedorUsuario> = ({
       if (json) {
         definirUsuario(JSON.parse(json));
       }
-      setCarregando(false);
+      definirCarregando(false);
     };
     carregarUsuario();
   }, []);

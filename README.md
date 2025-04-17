@@ -1,50 +1,78 @@
-# Welcome to your Expo app 👋
+# Aplicativo Mobile - Trabalho Universitário 📱
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Este projeto é um **aplicativo mobile** desenvolvido como parte de um trabalho universitário, utilizando as tecnologias **React Native** com **Expo**. O objetivo principal é aplicar os conhecimentos adquiridos ao longo da disciplina, criando uma aplicação funcional, responsiva e com boa usabilidade.
 
-## Get started
+## 🧩 Tecnologias Utilizadas
 
-1. Install dependencies
+- **React Native**: Framework para desenvolvimento de aplicativos móveis utilizando JavaScript e React.
+- **Expo**: Plataforma que facilita o desenvolvimento, teste e publicação de apps React Native.
+
+## 🚀 Como executar o projeto
+
+1. Instale as dependências:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Inicie o projeto com o Expo:
 
    ```bash
-    npx expo start
+   npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. Escolha onde visualizar o app:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   - Emulador Android ou iOS
+   - Dispositivo físico com o app [Expo Go](https://expo.dev/go)
+   - Navegador (modo web)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 📁 Estrutura do Projeto
 
-## Get a fresh project
+A estrutura do projeto é organizada da seguinte forma:
 
-When you're ready, run:
+- **app/**: Contém os arquivos das telas e rotas da aplicação, seguindo o padrão de rotas baseado em arquivos (*file-based routing*).
+- **assets/**: Pasta destinada a imagens, ícones e outros arquivos estáticos usados no app.
+- **.gitignore**: Arquivo que define o que será ignorado pelo controle de versão Git.
+- **app.json** e **eas.json**: Arquivos de configuração do projeto Expo.
+- **integrantes.md**: Documento com a identificação dos integrantes do grupo.
+- **package.json** e **package-lock.json**: Arquivos que definem as dependências e scripts do projeto.
+- **README.md**: Documento com a descrição geral do projeto.
+- **tsconfig.json**: Arquivo de configuração do TypeScript.
 
-```bash
-npm run reset-project
-```
+## 📚 Objetivos do Projeto
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- Desenvolver um aplicativo funcional com interface intuitiva.
+- Aplicar os conceitos de componentes, navegação, estados e comunicação entre telas.
+- Utilizar boas práticas de organização de código e estilização.
 
-## Learn more
+## 👥 Integrantes do Grupo
 
-To learn more about developing your project with Expo, look at the following resources:
+1. **Gustavo Batista Figueiredo**  
+   Matrícula: 202212015744
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+2. **Guilherme Rodrigues Guimarães**  
+   Matrícula: 202202900133
 
-## Join the community
+3. **Lucas dos Santos de Oliveira**  
+   Matrícula: 202309134871
 
-Join our community of developers creating universal apps.
+4. **Davi Machado Gomes**  
+   Matrícula: 202202174191
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+5. **Wallace de Assis Pereira Costa**  
+   Matrícula: 202202719951
+
+## 📌 Observações
+
+Este projeto é parte integrante da avaliação da disciplina de **Programação Para Dispositivos Móveis em Android**, do curso da **Universidade Estácio de Sá**, e tem fins exclusivamente acadêmicos.
+
+## 🔗 Links Úteis
+
+- [React Native - Documentação Oficial](https://reactnative.dev/docs/getting-started) - Guia para começar com React Native.
+- [Expo - Documentação](https://docs.expo.dev/) - Documentação completa da plataforma Expo.
+- [Expo Go](https://expo.dev/go) - Aplicativo para testar apps React Native em dispositivos físicos.
+- [Android Emulator - Configuração com Expo](https://docs.expo.dev/workflow/android-studio-emulator/) - Instruções para configurar o emulador Android.
+- [TypeScript - Documentação](https://www.typescriptlang.org/docs/) - Guia oficial do TypeScript, usado na configuração do projeto.
+- [Git - Documentação](https://git-scm.com/doc) - Referência para o controle de versão com Git.
+- [npm - Documentação](https://docs.npmjs.com/) - Documentação do npm para gerenciamento de dependências.

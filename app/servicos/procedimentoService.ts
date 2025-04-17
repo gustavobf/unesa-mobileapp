@@ -8,12 +8,12 @@ export const criarNovoProcedimento = (
   duracao: number
 ): Servico => {
   db.runSync(
-    `INSERT INTO servicos (categoria, preco, descricao, duracao) VALUES (?, ?, ?, ?)`,
+    `INSERT INTO servico (categoria, preco, descricao, duracao) VALUES (?, ?, ?, ?)`,
     [categoria, preco, descricao, duracao]
   );
 
   const resultado: Servico | null = db.getFirstSync(
-    `SELECT * FROM servicos WHERE rowid = last_insert_rowid()`
+    `SELECT * FROM servico WHERE rowid = last_insert_rowid()`
   );
 
   if (!resultado) {
@@ -31,7 +31,7 @@ export const criarNovoProcedimento = (
 
 export const obterServicoPorId = (serviceId: number): Servico | null => {
   const resultado: Servico | null = db.getFirstSync(
-    `SELECT * FROM servicos WHERE id = ?`,
+    `SELECT * FROM servico WHERE id = ?`,
     [serviceId]
   );
 
@@ -41,7 +41,7 @@ export const obterServicoPorId = (serviceId: number): Servico | null => {
 };
 
 export const obterServicos = (): Servico[] => {
-  const rows = db.getAllSync(`SELECT * FROM servicos`);
+  const rows = db.getAllSync(`SELECT * FROM servico`);
 
   return rows.map((row: any) => Servico.traduzir(row));
 };

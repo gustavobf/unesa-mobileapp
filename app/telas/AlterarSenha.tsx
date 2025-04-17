@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Animated,
   Text,
   TextInput,
   TouchableOpacity,
@@ -10,25 +11,29 @@ import { useUsuario } from "../contextos/UsuarioContext";
 import { estilosComuns } from "../estilos/estilosComuns";
 import { trocarSenha } from "../servicos/usuarioService";
 import { NOMES } from "../utilitarios/constantes";
+import { Cores } from "../estilos/cores";
 
-export default function ChangePassword({ navigation }: any) {
+export default function TrocarSenha({ navigation }: any) {
   const { usuario, definirUsuario } = useUsuario();
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [senhaAtual, definirSenhaAtual] = useState("");
+  const [novaSenha, definirNovaSenha] = useState("");
+  const [confirmarSenha, definirConfirmarSenha] = useState("");
 
-  const handleChangePassword = () => {
-    if (!currentPassword || !newPassword || !confirmPassword) {
+  const [animacaoVisibilidade, setAnimacaoVisibilidade] = useState(new Animated.Value(0));
+  const [animacaoBotao] = useState(new Animated.Value(0));
+
+  const tratarTrocaSenha = () => {
+    if (!senhaAtual || !novaSenha || !confirmarSenha) {
       Alert.alert("Erro", "Preencha todos os campos!");
       return;
     }
 
-    if (newPassword !== confirmPassword) {
+    if (novaSenha !== confirmarSenha) {
       Alert.alert("Erro", "As senhas novas não coincidem!");
       return;
     }
 
-    if (usuario && usuario.senha !== currentPassword) {
+    if (usuario && usuario.senha !== senhaAtual) {
       Alert.alert("Erro", "Senha atual incorreta!");
       return;
     }
@@ -38,65 +43,119 @@ export default function ChangePassword({ navigation }: any) {
       return;
     }
 
-    const sucess = trocarSenha(usuario.login, usuario.senha, newPassword);
+    const sucess = trocarSenha(usuario.login, usuario.senha, novaSenha);
 
     if (sucess) {
       Alert.alert("Sucesso", "Senha alterada com sucesso!");
       navigation.replace(NOMES.ABAS);
     } else {
-      Alert.alert("Erro", "Usuário não encontrado.");
+      Alert.alert("Erro", "Não foi possível alterar a senha.");
     }
   };
 
-  const handleLogout = () => {
+  const tratarLogout = () => {
     definirUsuario(null);
   };
+
+  useEffect(() => {
+    Animated.timing(animacaoVisibilidade, {
+      toValue: novaSenha.length > 0 ? 1 : 0,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.timing(animacaoBotao, {
+      toValue: senhaAtual.length > 0 && novaSenha.length > 0 && confirmarSenha.length > 0 ? 1 : 0,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
+  }, [novaSenha, confirmarSenha]);
+
+  const translateY = animacaoVisibilidade.interpolate({
+    inputRange: [0, 1],
+    outputRange: [20, 0],
+  });
+
+  const opacity = animacaoVisibilidade.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
+  const translateYBotao = animacaoBotao.interpolate({
+    inputRange: [0, 1],
+    outputRange: [20, 0],
+  });
+
+  const opacityBotao = animacaoBotao.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
 
   return (
     <View style={estilosComuns.conteiner}>
       <Text style={estilosComuns.titulo}>Trocar Senha</Text>
-      <Text style={estilosComuns.textoBemVindo}>Olá, {usuario?.login}!</Text>
+      <Text style={estilosComuns.textoComum}>Olá, {usuario?.nome}!</Text>
 
       <TextInput
-        style={estilosComuns.input}
+        style={[estilosComuns.input, { backgroundColor: Cores.branco }]}
         placeholder="Senha Atual"
         placeholderTextColor="#aaa"
         secureTextEntry
-        value={currentPassword}
-        onChangeText={setCurrentPassword}
+        value={senhaAtual}
+        onChangeText={definirSenhaAtual}
       />
 
       <TextInput
-        style={estilosComuns.input}
+        style={[estilosComuns.input, { backgroundColor: Cores.branco }]}
         placeholder="Nova Senha"
         placeholderTextColor="#aaa"
         secureTextEntry
-        value={newPassword}
-        onChangeText={setNewPassword}
+        value={novaSenha}
+        onChangeText={definirNovaSenha}
       />
 
-      <TextInput
-        style={estilosComuns.input}
-        placeholder="Confirmar Nova Senha"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+      {novaSenha.length > 0 && (
+        <Animated.View
+          style={{
+            opacity,
+            transform: [{ translateY }],
+            width: "100%",
+            overflow: "hidden",
+          }}
+        >
+          <TextInput
+            style={[estilosComuns.input, { backgroundColor: Cores.branco }]}
+            placeholder="Confirmar Nova Senha"
+            placeholderTextColor="#aaa"
+            secureTextEntry
+            value={confirmarSenha}
+            onChangeText={definirConfirmarSenha}
+          />
+        </Animated.View>
+      )}
 
-      <TouchableOpacity
-        style={estilosComuns.botaoSenha}
-        onPress={handleChangePassword}
+      <Animated.View
+        style={{
+          opacity: opacityBotao,
+          transform: [{ translateY: translateYBotao }],
+          width: "100%",
+          display: senhaAtual.length > 0 && novaSenha.length > 0 && confirmarSenha.length > 0 ? "flex" : "none",
+        }}
       >
-        <Text style={estilosComuns.textoBotao}>Alterar Senha</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={[estilosComuns.botao, { backgroundColor: Cores.primario }]}
+          onPress={tratarTrocaSenha}
+        >
+          <Text style={estilosComuns.textoBotao}>Alterar Senha</Text>
+        </TouchableOpacity>
+      </Animated.View>
 
       <TouchableOpacity
-        style={[estilosComuns.botaoSenha, estilosComuns.botaoSair]}
-        onPress={handleLogout}
+        style={[estilosComuns.botao, estilosComuns.botaoLogout, { backgroundColor: Cores.erro }]}
+        onPress={tratarLogout}
       >
         <Text style={estilosComuns.textoBotao}>Sair</Text>
       </TouchableOpacity>
     </View>
   );
-};
+}

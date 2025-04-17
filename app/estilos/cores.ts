@@ -9,4 +9,6 @@ export const Cores = {
   alerta: "#FFB300",
   borda: "#E0E0E0",
   sombra: "rgba(0, 0, 0, 0.1)",
+  sucesso: "#155724",
+  sucessoClaro: "#d4edda",
 };

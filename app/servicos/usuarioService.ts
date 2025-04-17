@@ -2,14 +2,14 @@ import { Usuario } from "../modelos/Usuario";
 import { db } from "./bancoDeDadosService";
 
 export const obterUsuario = (loginUsuario: string): Usuario | null => {
-  const usuario = db.getFirstSync("SELECT * FROM usuarios WHERE login = ?", [
+  const usuario = db.getFirstSync("SELECT * FROM usuario WHERE login = ?", [
     loginUsuario,
   ]);
   return usuario as Usuario;
 };
 
 export const obterUsuarioPorId = (usuarioId: number): Usuario | null => {
-  const usuario = db.getFirstSync("SELECT * FROM usuarios WHERE id = ?", [
+  const usuario = db.getFirstSync("SELECT * FROM usuario WHERE id = ?", [
     usuarioId,
   ]);
   return usuario as Usuario;
@@ -26,7 +26,8 @@ export const adicionarUsuario = (
     throw new Error("Usuário já existe!");
   }
 
-  db.runSync(`INSERT INTO usuarios (login, senha, papel) VALUES (?, ?, ?)`, [
+  db.runSync(`INSERT INTO usuario (nome, login, senha, papel) VALUES (?, ?, ?, ?)`, [
+    loginUsuario,
     loginUsuario,
     senha,
     papel,
@@ -58,7 +59,7 @@ export const trocarSenha = (
       throw new Error("Usuário ou senha atual incorretos!");
     }
 
-    db.runSync("UPDATE usuarios SET senha = ? WHERE login = ?", [
+    db.runSync("UPDATE usuario SET senha = ? WHERE login = ?", [
       novaSenha,
       loginUsuario,
     ]);
