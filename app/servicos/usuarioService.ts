@@ -1,9 +1,9 @@
-import { db } from "../App";
 import { Usuario } from "../modelos/Usuario";
+import { db } from "./bancoDeDadosService";
 
-export const obterUsuario = (nomeUsuario: string): Usuario | null => {
-  const usuario = db.getFirstSync("SELECT * FROM usuarios WHERE nome = ?", [
-    nomeUsuario,
+export const obterUsuario = (loginUsuario: string): Usuario | null => {
+  const usuario = db.getFirstSync("SELECT * FROM usuarios WHERE login = ?", [
+    loginUsuario,
   ]);
   return usuario as Usuario;
 };
@@ -16,29 +16,30 @@ export const obterUsuarioPorId = (usuarioId: number): Usuario | null => {
 };
 
 export const adicionarUsuario = (
-  nomeUsuario: string,
+  loginUsuario: string,
   senha: string,
   papel: number
 ): void => {
-  const resultado = obterUsuario(nomeUsuario);
+  const resultado = obterUsuario(loginUsuario);
 
   if (resultado != null) {
     throw new Error("Usuário já existe!");
   }
 
-  db.runSync(
-    `INSERT INTO usuarios (nome, senha, papel) VALUES (?, ?, ?)`,
-    [nomeUsuario, senha, papel]
-  );
+  db.runSync(`INSERT INTO usuarios (login, senha, papel) VALUES (?, ?, ?)`, [
+    loginUsuario,
+    senha,
+    papel,
+  ]);
 };
 
 export const entrarComUsuario = (
-  nomeUsuario: string,
+  loginUsuario: string,
   senha: string
 ): Usuario | null => {
-  const usuario = obterUsuario(nomeUsuario);
+  const usuario = obterUsuario(loginUsuario);
 
-  if (usuario && usuario.nome === nomeUsuario && usuario.senha === senha) {
+  if (usuario && usuario.login === loginUsuario && usuario.senha === senha) {
     return usuario;
   }
 
@@ -46,20 +47,20 @@ export const entrarComUsuario = (
 };
 
 export const trocarSenha = (
-  nomeUsuario: string,
+  loginUsuario: string,
   senhaAtual: string,
   novaSenha: string
 ): boolean => {
   try {
-    const usuario = obterUsuario(nomeUsuario);
+    const usuario = obterUsuario(loginUsuario);
 
     if (!usuario || usuario.senha !== senhaAtual) {
       throw new Error("Usuário ou senha atual incorretos!");
     }
 
-    db.runSync("UPDATE usuarios SET senha = ? WHERE nome = ?", [
+    db.runSync("UPDATE usuarios SET senha = ? WHERE login = ?", [
       novaSenha,
-      nomeUsuario,
+      loginUsuario,
     ]);
 
     return true;

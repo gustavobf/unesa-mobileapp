@@ -1,6 +1,6 @@
-import { db } from "../App";
 import { Agendamento } from "../modelos/Agendamento";
-import { obterServicoPorId } from "./opcoesService";
+import { db } from "./bancoDeDadosService";
+import { obterServicoPorId } from "./procedimentoService";
 
 export const criarAgendamento = (
   usuarioId: number,

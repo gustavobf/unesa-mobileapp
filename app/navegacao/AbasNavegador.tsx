@@ -4,10 +4,11 @@ import React from "react";
 import { useUsuario } from "../contextos/UsuarioContext";
 import { PapelUsuario } from "../modelos/enumerados/PapelUsuario";
 import Agendamento from "../telas/Agendamento";
-import ChangePassword from "../telas/AlteraSenha";
-import Home from "../telas/Principal";
+import ChangePassword from "../telas/AlterarSenha";
+import Inicio from "../telas/Principal";
 import PrincipalAdmin from "../telas/PrincipalAdmin";
 import { NOMES } from "../utilitarios/constantes";
+import { Cores } from "../estilos/cores";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,7 +36,7 @@ export default function AbasNavegador() {
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: "#4CAF50",
+        tabBarActiveTintColor: Cores.primario,
         tabBarInactiveTintColor: "black",
       })}
     >
@@ -47,7 +48,7 @@ export default function AbasNavegador() {
       {usuario?.papel === PapelUsuario.CLIENTE && (
         <Tab.Screen
           name={NOMES.INICIO}
-          component={Home}
+          component={Inicio}
           options={{ headerShown: false }}
         />
       )}

@@ -1,7 +1,7 @@
-import { db } from "../App";
 import { Servico } from "../modelos/Servico";
+import { db } from "./bancoDeDadosService";
 
-export const criarNovaOpcao = (
+export const criarNovoProcedimento = (
   categoria: string,
   preco: number,
   descricao: string,

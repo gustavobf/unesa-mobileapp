@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import {
   Alert,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { useUsuario } from "../contextos/UsuarioContext";
+import { estilosComuns } from "../estilos/estilosComuns";
 import { trocarSenha } from "../servicos/usuarioService";
 import { NOMES } from "../utilitarios/constantes";
 
@@ -38,11 +38,11 @@ export default function ChangePassword({ navigation }: any) {
       return;
     }
 
-    const sucess = trocarSenha(usuario.nome, usuario.senha, newPassword);
+    const sucess = trocarSenha(usuario.login, usuario.senha, newPassword);
 
     if (sucess) {
       Alert.alert("Sucesso", "Senha alterada com sucesso!");
-      navigation.replace(NOMES.INICIO);
+      navigation.replace(NOMES.ABAS);
     } else {
       Alert.alert("Erro", "Usuário não encontrado.");
     }
@@ -50,16 +50,15 @@ export default function ChangePassword({ navigation }: any) {
 
   const handleLogout = () => {
     definirUsuario(null);
-    navigation.replace(NOMES.ENTRAR);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Trocar Senha</Text>
-      <Text style={styles.welcomeText}>Olá, {usuario?.nome}!</Text>
+    <View style={estilosComuns.conteiner}>
+      <Text style={estilosComuns.titulo}>Trocar Senha</Text>
+      <Text style={estilosComuns.textoBemVindo}>Olá, {usuario?.login}!</Text>
 
       <TextInput
-        style={styles.input}
+        style={estilosComuns.input}
         placeholder="Senha Atual"
         placeholderTextColor="#aaa"
         secureTextEntry
@@ -68,7 +67,7 @@ export default function ChangePassword({ navigation }: any) {
       />
 
       <TextInput
-        style={styles.input}
+        style={estilosComuns.input}
         placeholder="Nova Senha"
         placeholderTextColor="#aaa"
         secureTextEntry
@@ -77,7 +76,7 @@ export default function ChangePassword({ navigation }: any) {
       />
 
       <TextInput
-        style={styles.input}
+        style={estilosComuns.input}
         placeholder="Confirmar Nova Senha"
         placeholderTextColor="#aaa"
         secureTextEntry
@@ -85,67 +84,19 @@ export default function ChangePassword({ navigation }: any) {
         onChangeText={setConfirmPassword}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
-        <Text style={styles.buttonText}>Alterar Senha</Text>
+      <TouchableOpacity
+        style={estilosComuns.botaoSenha}
+        onPress={handleChangePassword}
+      >
+        <Text style={estilosComuns.textoBotao}>Alterar Senha</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.button, styles.logoutButton]}
+        style={[estilosComuns.botaoSenha, estilosComuns.botaoSair]}
         onPress={handleLogout}
       >
-        <Text style={styles.buttonText}>Sair</Text>
+        <Text style={estilosComuns.textoBotao}>Sair</Text>
       </TouchableOpacity>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 20,
-  },
-  welcomeText: {
-    fontSize: 18,
-    color: "#333",
-    marginBottom: 40,
-  },
-  input: {
-    width: "100%",
-    height: 50,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 20,
-    backgroundColor: "#fff",
-    fontSize: 16,
-    color: "#333",
-  },
-  button: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#4CAF50",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  logoutButton: {
-    backgroundColor: "#FF3B30",
-    marginTop: 20,
-  },
-});
+};

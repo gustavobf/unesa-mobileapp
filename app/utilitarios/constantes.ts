@@ -6,5 +6,6 @@ export const NOMES = {
     ADMINISTRADOR: "Administrador",
     AGENDAMENTO: "Agendamento",
     INICIO_ADMIN: "HomeAdmin",
+    ABAS: "Abas",
   };
   

@@ -1,15 +1,23 @@
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
-import React, { useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import React, { useState } from "react";
+import {
+  Alert,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
 import { useUsuario } from "../contextos/UsuarioContext";
+import { estilosComuns } from "../estilos/estilosComuns";
 import { criarAgendamento } from "../servicos/agendamentoService";
-import { obterServicoPorId, obterServicos } from "../servicos/opcoesService";
+import { obterServicoPorId, obterServicos } from "../servicos/procedimentoService";
 
 export default function Appointment() {
   const [dataInicio, definirDataInicio] = useState<Date>(new Date());
-  const [servicoSelecionado, definirServicoSelecionado] = useState<number | null>(null);
+  const [servicoSelecionado, definirServicoSelecionado] = useState<
+    number | null
+  >(null);
   const [servicos, definirServicos] = useState<any[]>([]);
 
   const { usuario } = useUsuario();
@@ -90,13 +98,13 @@ export default function Appointment() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Agendar seu Serviço</Text>
+    <View style={estilosComuns.conteiner}>
+      <Text style={estilosComuns.titulo}>Agendar seu Serviço</Text>
 
       <Picker
         selectedValue={servicoSelecionado}
         onValueChange={(itemValue) => definirServicoSelecionado(itemValue)}
-        style={styles.picker}
+        style={estilosComuns.escolha}
       >
         <Picker.Item label="Escolha um serviço" value={null} />
         {servicos.map((service) => (
@@ -108,71 +116,21 @@ export default function Appointment() {
         ))}
       </Picker>
 
-      <TouchableOpacity style={styles.input} onPress={abrirEscolhaDataHora}>
-        <Text style={styles.dateText}>
+      <TouchableOpacity
+        style={estilosComuns.input}
+        onPress={abrirEscolhaDataHora}
+      >
+        <Text style={estilosComuns.textoData}>
           {dataInicio.toLocaleString("pt-BR")}
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={handleCreateAppointment}>
-        <Text style={styles.buttonText}>Confirmar Agendamento</Text>
+      <TouchableOpacity
+        style={estilosComuns.botao}
+        onPress={handleCreateAppointment}
+      >
+        <Text style={estilosComuns.textoBotao}>Confirmar Agendamento</Text>
       </TouchableOpacity>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 25,
-    backgroundColor: "#f8f8f8",
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 30,
-    color: "#333",
-  },
-  picker: {
-    width: "85%",
-    height: 50,
-    backgroundColor: "#fff",
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 20,
-    fontSize: 16,
-  },
-  input: {
-    width: "85%",
-    height: 50,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-    backgroundColor: "#fff",
-    paddingHorizontal: 15,
-  },
-  dateText: {
-    fontSize: 18,
-    color: "#333",
-  },
-  button: {
-    width: "85%",
-    height: 50,
-    backgroundColor: "#4CAF50",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    marginTop: 15,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-});
+};

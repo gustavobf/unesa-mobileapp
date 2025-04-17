@@ -5,22 +5,22 @@ import {
   FlatList,
   Modal,
   SafeAreaView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { useUsuario } from "../contextos/UsuarioContext";
+import { estilosComuns } from "../estilos/estilosComuns";
+import { Agendamento } from "../modelos/Agendamento";
 import {
   excluirAgendamento,
   obterAgendamentos,
 } from "../servicos/agendamentoService";
-import { criarNovaOpcao, obterServicoPorId } from "../servicos/opcoesService";
-import { Agendamento } from "../modelos/Agendamento";
+import { criarNovoProcedimento, obterServicoPorId } from "../servicos/procedimentoService";
 import { obterUsuarioPorId } from "../servicos/usuarioService";
 
-export default function HomeAdmin({ navigation }: any) {
+export default function PrincipalAdmin({ navigation }: any) {
   const { usuario } = useUsuario();
   const [agendamentosUsuario, definirAgendamentosUsuario] = useState<any[]>([]);
   const [estaCriandoOpcao, definirEstaCriandoOpcao] = useState(false);
@@ -35,7 +35,7 @@ export default function HomeAdmin({ navigation }: any) {
       return;
     }
 
-    const novaOpcao = criarNovaOpcao(
+    const novaOpcao = criarNovoProcedimento(
       opcaoCategoria,
       parseFloat(opcaoPreco),
       opcaoDescricao,
@@ -64,257 +64,127 @@ export default function HomeAdmin({ navigation }: any) {
 
   useFocusEffect(
     React.useCallback(() => {
-      const agendamentos = obterAgendamentos().sort((a, b) => {
-        const dataA = new Date(a.dataInicioAgendamento);
-        const dataB = new Date(b.dataInicioAgendamento);
-        return dataA.getTime() - dataB.getTime();
-      });
-
-      definirAgendamentosUsuario(agendamentos);
+      definirAgendamentosUsuario(obterAgendamentos);
     }, [])
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView>
       {usuario ? (
-        <>
-          {agendamentosUsuario.length > 0 ? (
-            <View style={styles.appointmentList}>
-              <Text style={styles.listTitle}>Agendamentos:</Text>
-              <FlatList
-                data={agendamentosUsuario}
-                keyExtractor={(item: Agendamento) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <View style={styles.appointmentItem}>
-                    <Text style={styles.appointmentText}>
-                      Usuário: {obterUsuarioPorId(item.usuarioId)!.nome}
-                    </Text>
-                    <Text style={styles.appointmentText}>
-                      Serviço: {obterServicoPorId(item.servicoId)!.descricao}
-                    </Text>
-                    <Text style={styles.appointmentText}>
-                      Data: {item.dataInicioAgendamento.toLocaleString("pt-BR")}
-                    </Text>
-                    <Text style={styles.appointmentText}>
-                      Fim: {item.dataFimAgendamento.toLocaleString("pt-BR")}
-                    </Text>
-                    <Text style={styles.appointmentText}>
-                      Preço: R${obterServicoPorId(item.servicoId)!.preco.toFixed(2).replace(".", ",")}
-                    </Text>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => tratarAgendamentoCompleto(item.id)}
-                    >
-                      <Text style={styles.buttonText}>Concluir</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
-            </View>
-          ) : (
-            <Text style={styles.noAppointmentsText}>
-              Não há agendamentos no momento.
-            </Text>
-          )}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => definirEstaCriandoOpcao(true)}
-          >
-            <Text style={styles.buttonText}>Criar Novo Serviço</Text>
-          </TouchableOpacity>
+        <FlatList
+          data={agendamentosUsuario}
+          keyExtractor={(item: Agendamento) => item.id.toString()}
+          ListHeaderComponent={
+            <>
+              <Text style={estilosComuns.textoBemVindo}>
+                Olá, {usuario.nome}! {"\n"}Bem-vindo ao painel administrativo.
+              </Text>
 
-          <Modal
-            visible={estaCriandoOpcao}
-            animationType="slide"
-            transparent={true}
-            onRequestClose={() => definirEstaCriandoOpcao(false)}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.formTitle}>Novo Serviço</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Categoria"
-                  value={opcaoCategoria}
-                  onChangeText={definirCategoriaOpcao}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Preço"
-                  value={opcaoPreco}
-                  onChangeText={definirPrecoOpcao}
-                  keyboardType="numeric"
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Descrição"
-                  value={opcaoDescricao}
-                  onChangeText={definirDescricaoOpcao}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Duração (minutos)"
-                  value={opcaoDuracao}
-                  onChangeText={definirDuracaoOpcao}
-                  keyboardType="numeric"
-                />
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={handleCreateService}
-                >
-                  <Text style={styles.buttonText}>Salvar Serviço</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={() => definirEstaCriandoOpcao(false)}
-                >
-                  <Text style={styles.buttonText}>Cancelar</Text>
-                </TouchableOpacity>
-              </View>
+              {agendamentosUsuario.length > 0 ? (
+                <Text style={estilosComuns.titulo}>Agendamentos:</Text>
+              ) : (
+                <Text style={estilosComuns.textoSemAgendamentos}>
+                  Não há agendamentos no momento.
+                </Text>
+              )}
+            </>
+          }
+          renderItem={({ item }) => (
+            <View style={estilosComuns.itemAgendamento}>
+              <Text style={estilosComuns.textoAgendamento}>
+                <Text style={estilosComuns.textoNegrito}>Usuário:</Text>{" "}
+                {obterUsuarioPorId(item.usuarioId)!.nome}
+              </Text>
+              <Text style={estilosComuns.textoAgendamento}>
+                <Text style={estilosComuns.textoNegrito}>Serviço:</Text>{" "}
+                {obterServicoPorId(item.servicoId)!.descricao}
+              </Text>
+              <Text style={estilosComuns.textoAgendamento}>
+                <Text style={estilosComuns.textoNegrito}>Início:</Text>{" "}
+                {item.dataInicioAgendamento.toLocaleString("pt-BR")}
+              </Text>
+              <Text style={estilosComuns.textoAgendamento}>
+                <Text style={estilosComuns.textoNegrito}>Fim:</Text>{" "}
+                {item.dataFimAgendamento.toLocaleString("pt-BR")}
+              </Text>
+              <Text style={estilosComuns.textoAgendamento}>
+                <Text style={estilosComuns.textoNegrito}>Preço:</Text>{" R$"}
+                {obterServicoPorId(item.servicoId)!
+                  .preco.toFixed(2)
+                  .replace(".", ",")}
+              </Text>
+              <TouchableOpacity
+                style={estilosComuns.botao}
+                onPress={() => tratarAgendamentoCompleto(item.id)}
+              >
+                <Text style={estilosComuns.textoBotao}>Concluir</Text>
+              </TouchableOpacity>
             </View>
-          </Modal>
-        </>
+          )}
+          ListFooterComponent={
+            <TouchableOpacity
+              style={estilosComuns.botao}
+              onPress={() => definirEstaCriandoOpcao(true)}
+            >
+              <Text style={estilosComuns.textoBotao}>Criar Novo Serviço</Text>
+            </TouchableOpacity>
+          }
+          contentContainerStyle={estilosComuns.scrollContainer}
+        />
       ) : (
-        <Text style={styles.welcomeText}>Usuário não logado</Text>
+        <Text style={estilosComuns.textoBemVindo}>Usuário não logado</Text>
       )}
+
+      <Modal
+        visible={estaCriandoOpcao}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => definirEstaCriandoOpcao(false)}
+      >
+        <View style={estilosComuns.conteinerModal}>
+          <View style={estilosComuns.conteudoModal}>
+            <Text style={estilosComuns.formularioTitulo}>Novo Serviço</Text>
+            <TextInput
+              style={estilosComuns.input}
+              placeholder="Categoria"
+              value={opcaoCategoria}
+              onChangeText={definirCategoriaOpcao}
+            />
+            <TextInput
+              style={estilosComuns.input}
+              placeholder="Preço"
+              value={opcaoPreco}
+              onChangeText={definirPrecoOpcao}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={estilosComuns.input}
+              placeholder="Descrição"
+              value={opcaoDescricao}
+              onChangeText={definirDescricaoOpcao}
+            />
+            <TextInput
+              style={estilosComuns.input}
+              placeholder="Duração (minutos)"
+              value={opcaoDuracao}
+              onChangeText={definirDuracaoOpcao}
+              keyboardType="numeric"
+            />
+            <TouchableOpacity
+              style={estilosComuns.botao}
+              onPress={handleCreateService}
+            >
+              <Text style={estilosComuns.textoBotao}>Salvar Serviço</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={estilosComuns.botaoCancelar}
+              onPress={() => definirEstaCriandoOpcao(false)}
+            >
+              <Text style={estilosComuns.textoBotao}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  welcomeText: {
-    fontSize: 18,
-    color: "#333",
-    marginBottom: 20,
-    fontWeight: "500",
-  },
-  appointmentList: {
-    width: "100%",
-    marginTop: 20,
-  },
-  listTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 15,
-    color: "#333",
-  },
-  appointmentItem: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 15,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  appointmentText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  noAppointmentsText: {
-    fontSize: 16,
-    color: "#999",
-    marginTop: 20,
-    fontStyle: "italic",
-  },
-  button: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#4CAF50",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 12,
-    marginTop: 30,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  serviceForm: {
-    width: "100%",
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    marginTop: 20,
-    borderColor: "#ddd",
-    borderWidth: 1,
-  },
-  formTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 15,
-    color: "#333",
-  },
-  input: {
-    width: "100%",
-    height: 40,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    fontSize: 16,
-    backgroundColor: "#fff",
-    color: "#333",
-  },
-  cancelButton: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#f44336",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 12,
-    marginTop: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    width: "80%",
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  totalGanhosContainer: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    backgroundColor: "#4CAF50",
-    padding: 10,
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  totalGanhosText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
